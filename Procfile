@@ -1,1 +1,1 @@
-worker: python3 -m soheru
+web: python3 -m soheru
