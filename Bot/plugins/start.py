@@ -6,7 +6,11 @@ from pyrogram.types import Message, InlineKeyboardButton as IKB, InlineKeyboardM
 from Bot.database.client import check_resolution, currentformat, enable_resolution, update_format
 
 from Bot.database.users import get_auth, is_reg, new_user
-from Bot.plugins.font_change import text_replace 
+from Bot.plugins.font_change import text_replace
+from aiohttp import web
+from plugins import web_server
+
+PORT = "8080"
 
 
 LINK = [
@@ -124,6 +128,10 @@ async def call_callback(client:soheru, callback_query):
 async def start_bot(client:soheru, message:Message):
     if is_reg(message.from_user.id) is False:
         new_user(message.from_user.id, False)
+        app = web.AppRunner(await web_server())
+        await app.setup()
+        bind_address = "0.0.0.0"
+        await web.TCPSite(app, bind_address, PORT).start()
     
     text = f"**Hi There {message.from_user.first_name}**,\n\n"
     text += f"**Yup Waccha Lookin Here?**"
